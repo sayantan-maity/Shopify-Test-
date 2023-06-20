@@ -1,0 +1,241 @@
+<style>
+  .TWUM_listProductReplace{
+    text-align:center;
+    font-size: 22px;
+    font-weight: bold;
+    color: black;
+  }
+  .TWUM_listProductTitle{
+    text-align: center;
+    font-weight: bold;
+    color: black;
+  }
+  .tw-select-variant-priceMODAL{
+    margin:5px 0;
+  }
+  .tw-product-variantMODAL{
+    margin-bottom:10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .TWUM_listProductPrice{
+    text-align:center;
+  }
+  /* The Modal (background) */
+ .product-image{
+   display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    padding: 15px;
+    border-radius: 15px;
+ } 
+  .product-image img{
+    width:75%;
+    border-radius: 15px;
+  }
+  .TWUM_listProduct_grid{
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 8; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  position:relative;
+  background-color: #fefefe;
+  padding: 20px;
+  border: 2px solid #000;
+  border-radius:15px;
+  width: 70%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    font-size: 28px;
+    position: absolute;
+    font-weight: bold;
+    top: -6px;
+    right: 12px;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Fade in animation */
+.modal.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Fade out animation */
+.modal.fade-out {
+  animation: fadeOut 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+  .tw-VariantSelectorMODAL{
+    width: 200px;
+    border: 1px solid black;
+    border-radius: 6px;
+    padding: 8px;
+    text-align:center;
+  }
+  .ATCMODALBTN{
+    width: 200px;
+    border-radius: 6px;
+    border: 1px solid black;
+    font-weight: bold;
+    color:black;
+    padding: 10px 0;
+    justify-content: center;
+    transition-duration:.5s;
+    background: black;
+    color: white;
+    margin:auto;
+  }
+  .ATCMODALBTN:hover{
+    cursor:pointer;
+    background:white;
+    color:black;
+  }
+  
+  @media(max-width:640px){
+    .modal-content{
+      width:95%;
+      padding:10px;
+    }
+    .ATCMODALBTN{
+      width:190px;
+    }
+    .TWUM_listProduct_grid{
+      grid-template-columns: 1fr;
+      gap:20px;
+    }
+    .TWUM_listProduct_ProductTab{
+      display:flex;
+    }
+    .TWUM_listProduct_VarAndPrice{
+      display:flex;
+      align-items: end;
+      margin-bottom:10px;
+      flex-direction: row-reverse;
+    }
+    .tw-VariantSelectorMODAL{
+      width:110px;
+    }
+    .TWUM_listProductPrice{
+      width:100%;
+    }
+    .product-image{
+     margin-right:10px; 
+    }
+    .tw-product-variantMODAL{
+      margin-bottom:0px;
+    }
+  }
+</style>
+   {% assign TWUM_listProduct = product.metafields.custom.twmultiproductupsell.value %}
+    <div id ="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="TWUM_listProductReplace">Replace This product</div>
+        <div class="TWUM_listProduct_grid">
+          {% for TWproduct in TWUM_listProduct %}
+            <div class="TWUM_listProduct_ProductTab">
+              <div class="product-image"><img src="{{ TWproduct.featured_image | img_url:'master' }}"/></div>
+              <div>
+              <div class="TWUM_listProductTitle">{{ TWproduct.title }}</div>
+              <div class="TWUM_listProduct_VarAndPrice">
+              <div class="TWUM_listProductPrice TWUM_listProductPrice{{ forloop.index }}">{{ TWproduct.price | money_without_trailing_zeros }}</div>
+                
+              <!-- variant selector  Start -->
+              <div class="tw-product-variantMODAL ">
+                <p class="tw-select-variant-priceMODAL">Select Variant</p>
+                <select class="tw-VariantSelectorMODAL"  id="tw-VariantSelectorMODAL{{ forloop.index }}">
+                  {% for variant in TWproduct.variants %}
+                    <option
+                      data-variantPrice="{{ variant.price | money_without_trailing_zeros}}"
+                      data-productAvailable="{{ variant.available }}"
+                      value="{{ variant.id }}"
+                    >
+                      {{ variant.title }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <!-- variant selector  End -->
+              </div>
+              <div>
+                <form method="post" id="product-form-{{TWproduct.id }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data" novalidate="novalidate" data-type="add-to-cart-form">
+                  <input type="hidden" name="form_type" value="product">
+                  <input type="hidden" name="utf8" value="✓">
+                  <input type="hidden" name="id" value="{{ TWproduct.selected_or_first_available_variant.id }}" class="product-variant-id product-variant-idModal product-variant-idModal{{ forloop.index }}">
+                  <div class="">
+                    <button id="ProductSubmitButton-{{ TWproduct.id }}" type="submit" name="add" class="ATCMODALBTN product-form__submit button--full-width ModalAtcButton" onclick="customAddToCart('{{ TWproduct.handle }}','product-form-{{ TWproduct.id }}',this)" >
+                      <span>Add to cart</span>
+                      <div class="loading-overlay__spinner hidden">
+                        <svg aria-hidden="true" focusable="false" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                          <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                        </svg>
+                      </div>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <script>
+            $("#tw-VariantSelectorMODAL{{ forloop.index }}").change(function(){
+  let modalSelectedVarid{{forloop.index}} = $('#tw-VariantSelectorMODAL{{ forloop.index }}').val();
+  let TWModaldataid{{forloop.index}} = $("#tw-VariantSelectorMODAL{{ forloop.index }} option:selected").attr('data-variantPrice');
+  $(".TWUM_listProductPrice{{ forloop.index }}").html(TWModaldataid{{forloop.index}});
+              // console.log("dataid{{forloop.index}}",dataid{{forloop.index}});
+  $(".product-variant-idModal{{ forloop.index }}").val(modalSelectedVarid{{forloop.index}});
+  console.log("modalSelectedVarid{{forloop.index}}",modalSelectedVarid{{forloop.index}})
+});</script>
+          {% endfor %}
+        </div>
+    </div>
+
+<script>
+ $(".ModalAtcButton").click(function(){
+  event.preventDefault()
+});
+
+</script>

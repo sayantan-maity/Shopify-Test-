@@ -1,0 +1,239 @@
+{% assign offer_details = shop.metafields['discount-offers']['discount-offers'].value %}
+<style>
+         .copy-to-clipboard{
+           color:  black ;
+          font-size: 15px;
+          font-weight: 500;
+          line-height: 22px;
+         }
+         .each-offer:not(:last-child), .offers-div:not(:last-child) {
+        border-bottom: 1px solid #e6e6e6;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+    }
+              .circle1 {
+              border: 1px solid black;
+              left: -6px;
+          }
+          .circle2 {
+          border: 1px solid black;
+          right: -6px;
+      }
+        .coupon-code-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+          .circle1, .circle2 {
+              display:block !important;
+              height: 12px;
+              width: 12px;
+              background-color: white;
+              z-index: 1;
+              border-radius: 50%;
+              position: absolute;
+              top: 22px;
+          }
+              .coupon-code {
+                border: 1px solid black ;
+                background-color: rgba( 238,116,31,.1);
+                color: #1a181e;
+                height: 26px;
+                border-radius: 2px;
+                justify-content: center;
+                align-items: center;
+                padding: 2px 12px;
+                font-size: 15px;
+                font-weight: 500;
+                line-height: 22px;
+                display: flex;
+            }
+               .svg-offer-hide{
+                  display: flex;
+                  justify-content: space-between;
+                  flex-direction: row-reverse;
+                  align-items: center;
+                  width: 90%;
+                  margin: auto;
+               }
+                    .coupons-header {
+                  font-size: 16px;
+                  font-weight: 500;
+                  line-height: 24px;
+                  margin-top: 16px;
+                  width: 85%;
+                  margin-left: auto;
+                  margin-right: auto;
+              }
+                .coupons-header:after {
+                  content: "";
+                  width: 64px;
+                  height: 4px;
+                  background-color: black!important;
+                  margin-top: 8px;
+                  margin-bottom: 20px;
+                  display: block;
+              }
+                    .copy-to-clipboard{
+                          line-height: 0;
+                    }
+                    .copy-to-clipboard svg{
+                          width: 24px;
+                    }
+                    .name-and-svg{
+                    align-items: center;
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                    }
+
+                    .name-and-copy{
+                      display: flex;
+
+                    }
+                    .dropdown-heading {
+                      display: flex;
+                    }
+                    .dropdown-minus{
+                      display: none;
+                      margin-left: 8px;
+                    }
+                   .dropdown-plus{
+
+                     margin-left: 8px;
+                    }
+                       .container {
+                      position: relative;
+                      height: 200px;
+                      overflow: hidden; /* to hide overflowing content */
+                    }
+                    .dropdown-content {
+                  display: none;
+                }
+
+                .dropdown-heading {
+                  cursor: pointer;
+                }
+                    #offer {
+                          position: fixed;
+                  top: 50%;
+                  right: -25px;
+                  background-color: white;
+                  padding: 10px;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  color: black;
+                  border: 2px black solid;
+                  border-radius: 8px;
+                  z-index: 999999;
+                  /* transform: rotateY(0deg); */
+                  transform: rotate(270deg);
+                    }
+                    .offer-transform {
+                      transform: translateX(0) !important;
+                      transition: transform 0.5s ease-in !important;
+                  }
+                  .offers-image{
+                        height: 25px;
+                    width: 25px;
+                    margin-left: 8px;
+                  }
+                    #bigDiv {
+                      top: 0;
+                      min-height: 100vh;
+                      max-height: 1080px;
+                      width: 375px;
+                      background-color: white;
+                      right: 0;
+                      position: fixed;
+                      transform: translateX(100%);
+                      z-index: 1234581;
+                      transition: transform 0.5s ease-out;
+                    }
+                    .all-offers{
+                      padding: 8px 16px;
+                    }
+                    .each-offer{
+  /*                   border: 1px solid black; */
+                    padding: 0px 16px;
+                    margin-bottom: 16px;
+                    }
+</style>
+<div class="container">
+  <span id="offer" onclick="translateDiv()"
+    >Offers<img
+      class="offers-image"
+      src="https://cdn.shopify.com/s/files/1/0607/7982/3300/files/icons8-offer-50.png?v=1684216604"
+  ></span>
+
+  <div id="bigDiv">
+    <span class="svg-offer-hide">{% render 'svg-cross' %} Coupons & Offers:</span>
+    <div class="coupons-header">
+      Available coupons
+      <div></div>
+    </div>
+    <div class="all-offers">
+      {% for discount in offer_details %}
+        <div class="each-offer">
+          <div class="name-and-svg">
+            <div class="coupon-code-wrapper">
+              <div class="circle1"></div>
+              <div class="circle2"></div>
+              <h3 class="coupon-code">{{ discount.discount_name }}</h3>
+            </div>
+            <span class="copy-to-clipboard" onclick="copyElementAbove(this)"> Copy Code </span>
+          </div>
+          <div class="dropdown">
+            <p>{{ discount.discount_data }}</p>
+            <h3 class="dropdown-heading" onclick="toggleDropdown(this)">
+              Details <span class="dropdown-plus">+</span><span class="dropdown-minus">-</span>
+            </h3>
+            <div class="dropdown-content">
+              <p>{{ discount.discount_detail }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+     function copyElementAbove(button) {
+    var previousElement = button.previousElementSibling;
+    var innerHTML = previousElement.innerHTML;
+
+    navigator.clipboard.writeText(innerHTML)
+      .then(function() {
+        console.log('Copied to clipboard: ' + innerHTML);
+      })
+      .catch(function(error) {
+        console.error('Error copying to clipboard: ', error);
+      });
+  }
+
+      function translateDiv() {
+        var bigDiv = document.getElementById("bigDiv");
+        $(bigDiv).addClass('offer-transform');
+         // $('#offer').addClass('offer-transform');
+      }
+
+      function toggleDropdown(heading) {
+
+       $(heading).children('.dropdown-plus').toggle() ;
+       $(heading).children('.dropdown-minus').toggle() ;
+
+       var nextElement = $(heading).next();
+
+       $(nextElement).toggle();
+
+       var content = heading.nextElementSibling ;
+
+
+    }
+
+      $('.svg-offer-hide').click(function(){
+        $(bigDiv).removeClass('offer-transform');
+      })
+</script>

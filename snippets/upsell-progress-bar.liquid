@@ -1,0 +1,321 @@
+<style>
+  
+  #above-text-msg p{
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+    .pipe-mile{
+      color: white !important;
+    }
+    #cart-price-discount{
+      font-size: 16px;
+    }
+    .hide {
+      display: none;
+  }
+    .capital-shopping-right .cart-item:hover{
+      background: none !important;
+    }
+      .sm_proo_head{
+        text-align: center;
+        margin: 7px 0;
+      }
+        .gift_icon{
+            margin-right: 10px;
+            color: #c562e3;
+        }
+      .progress {
+        width: 100%;
+        margin: auto;
+        height: 0.5em;
+        background-color: #e9e9e9;
+        position: relative;
+        border-radius: 20px;
+      }
+      span.value {
+        background: #073235;
+        border-radius: 20px;
+        position: absolute;
+        height: 100%;
+        font-size:13px;
+        text-align: center;
+        color: #fff;
+        transition: 0.5s;
+        left: 0;
+    }
+</style>
+<style>
+    .index-three .pipe-mile {
+      margin-left: 34px !important;
+  }
+    .index-two .text-mile{
+      margin-left: 10px;
+    }
+      div#above-text-msg {
+        text-align: center;
+    }
+          .progress-bar-wrapper{
+            padding: 25px 25px;
+            position: relative;
+          }
+        .cart-miles p{
+          margin:0;
+          line-height:20px;
+          font-weight: 700;
+        }
+          .cart-miles-wrapper {
+      /*       display: grid;
+            grid-template-columns: 25% 25% 25% 25%;
+            padding-top: 10px;
+            position: absolute;
+            width: 100%;
+            top: -15px; */
+          }
+        /*   .cart-miles::before{
+            content: "|";
+            font-weight:900;
+          } */
+        .cart-miles.index-one {
+          position: absolute;
+          top: -5px;
+          left: -2px;
+        }
+        .cart-miles.index-four {
+          position: absolute;
+          top: -5px;
+          right: 0;
+        }
+        .cart-miles.index-three {
+          position: absolute;
+          top: -5px;
+          left: calc(93% - 0px);
+        }
+        .cart-miles.index-two {
+              position: absolute;
+              top: -5px;
+              left: calc(50% - 30px);
+        }
+        p.pipe-mile.add-left-margin {
+          margin-left: 30px;
+        }
+        .cart-miles-text {
+          display: inline-block;
+          position: absolute;
+          top: -25px;
+        }
+      .cart-miles-text.ten-off{
+        left: 44%;
+      }
+      .cart-miles-text.twenty-off{
+       left: 90%;
+      width: max-content;
+      }
+      .cart-miles-text.free-bowl{
+        right: 10px;
+      }
+      .discount-msg p{
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+        background: #008840;
+        color: #ffffff;
+        padding: 10px 0px;
+      }
+    @media (max-width: 650px){
+          .cart-miles-text.twenty-off {
+          left: 85%;
+      }
+            .cart-miles.index-three {
+          left: calc(88% - 0px);
+      }
+    }
+</style>
+
+<div id="sm_proo">
+  <div id="above-text-msg"></div>
+  <div class="progress-bar-wrapper">
+    <div class="progress" data-label="35%">
+      <span class="value" id="progress-value" style=""></span>
+      <div class="cart-miles-wrapper">
+        <div class="cart-miles index-one">
+          <p class="pipe-mile">|</p>
+          <p class="text-mile">0</p>
+        </div>
+        <span class="cart-miles-text ten-off"> 15% off </span>
+        <div class="cart-miles index-two">
+          <p class="pipe-mile add-left-margin">|</p>
+          <p class="text-mile">1000</p>
+        </div>
+        <span class="cart-miles-text twenty-off"> 20% off </span>
+        <div class="cart-miles index-three">
+          <p class="pipe-mile add-left-margin">|</p>
+          <p class="text-mile">2000</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="discount-msg" id="discount-msg"></div>
+</div>
+
+<script type="text/javascript">
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  {% comment %}
+  let price = document.querySelector('#subtotalVal');
+
+  const newInnerHTML = price.innerHTML;
+          let subtotal = newInnerHTML.replace(/Rs\. |,/g, '');
+       
+          if(subtotal > 1000 && subtotal < 2000){
+           discount = (subtotal * 0.85).toFixed(2);
+           $('#cart-price-discount').html(`Rs. ${ discount}`);
+          $('#cart-price').css('font-size', '13px').css('text-decoration', 'line-through');
+
+         
+
+
+  
+          }
+          else if(subtotal > 2000){
+            discount = (subtotal * 0.8).toFixed(2);
+            $('#cart-price-discount').html(`Rs. ${ discount}`);
+          $('#cart-price').css('font-size', '13px').css('text-decoration', 'line-through');
+
+            // discount
+         
+          }
+         else{
+             $('#cart-price-discount').html(``);
+            $('#cart-price').css('font-size', '16px').css('text-decoration', 'none');
+         }
+         
+ {% endcomment %} 
+  
+    progressupdate({{cart.total_price | divided_by: 100}});
+
+  
+  function progressupdate(total_cart_value){
+   //alert(total_cart_value);
+    if(total_cart_value <= 0 ){
+      document.getElementById("sm_proo").style.display = 'none';
+    }
+    if(total_cart_value >= 1 && total_cart_value < 1000){
+        document.getElementById("sm_proo").style.display = 'block';
+    let diffTemp = parseInt(1000 - total_cart_value)-30;
+    console.log("diffTemp: ",diffTemp);
+    let tmp1 = parseInt((1000 - total_cart_value));
+    let update = (total_cart_value / 2000 ) * 100 ; 
+     // alert(update);
+    document.getElementById("progress-value").style.width=`${update}%`;
+    document.getElementById("above-text-msg").innerHTML=`<p>Add products worth ₹${tmp1} to unlock 15% off</p>`;
+  }
+
+    if(total_cart_value >= 1000 && total_cart_value < 2000){
+        document.getElementById("sm_proo").style.display = 'block';
+    let diffTemp2 = parseInt(2000 - total_cart_value)-30;
+    diffTemp2 = diffTemp2;
+    console.log("diffTemp2: ",diffTemp2);
+    let tmp2 = parseInt((2000 - total_cart_value));
+     let update = (total_cart_value / 2000 ) * 100 ; 
+       // alert(update);
+    document.getElementById("progress-value").style.width=`${update}%`;
+
+    document.getElementById("above-text-msg").innerHTML=`<p>Congrats You have unlocked 15% off<br> add products worth ₹${tmp2} to unlock  20% off</p>`;
+  }
+
+    if(total_cart_value >= 2000){
+        document.getElementById("sm_proo").style.display = 'block';
+    console.log("total_cart_value: ",total_cart_value);
+    document.getElementById("progress-value").style.width="100%";
+    document.getElementById("above-text-msg").innerHTML=`<p>Congrats, you have unlocked 20% off</p>`;
+
+  }
+  };
+
+const observerCallback = (mutationsList) => {
+  for (let mutation of mutationsList) {
+    if (mutation.type === 'childList' || mutation.type === 'characterData') {
+      const newInnerHTML = mutation.target.innerHTML;
+ 
+      let subtotal = parseFloat(newInnerHTML.match(/\d+(?:\.\d+)?/)[0]);;
+      console.log('what is the subtotal', subtotal);
+      progressupdate(subtotal);
+    }
+  }
+};
+
+const observerConfigProgress = { childList: true, subtree: true, characterData: true };
+
+const observeSubtotalVal = () => {
+  const targetNode = document.querySelector('#subtotalVal');
+  if (targetNode) {
+    const observernew = new MutationObserver(observerCallback);
+    observernew.observe(targetNode, observerConfigProgress);
+  } else {
+    setTimeout(observeSubtotalVal, 100);
+  }
+};
+
+observeSubtotalVal();
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>

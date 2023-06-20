@@ -1,0 +1,174 @@
+<style>
+    /* width */
+.cross-sell-main-div::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+.cross-sell-main-div::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+.cross-sell-main-div::-webkit-scrollbar-thumb {
+  background: black; 
+  border-radius: 10px;
+}
+    .cu_maincon{
+      margin-top:9px;
+    }
+  .cu_maincon button{
+    padding:3px;
+    display: flex;
+      justify-content: center;
+    background: transparent;
+    transition-duration:.5s;
+  }
+    .cu_maincon button:hover{
+        background: black !important;
+    }
+    .under_cu:nth-child(2) {
+    background: white;
+  }
+    .under_cu{
+      display:flex;
+      margin-top:7px;
+      justify-content: space-around;
+      align-items: center;
+    }
+    #cu_title{
+      font-size: 11px;
+    }
+    .cu_price{
+      font-weight:500;
+      font-size: 11px;
+    }
+    .cu_t_p{
+          width: 50%;
+    }
+    .cus_heading{
+    font-weight: bold;
+    text-align: center;
+    color: black;
+    font-size: 16px;
+    margin: 0;
+    }
+    .cross-sell-main-div{
+      margin-top: 14px;
+    }
+  @media (max-width: 640px) {
+        .cu_maincon{
+      margin-top:0px;
+    }
+    }
+</style>
+
+<div class="cross-sell-main-div">
+  <h6 class="cus_heading">You May Also Like</h6>
+  <div class="cu_maincon"></div>
+  {% comment %}
+  <div><img class="cart_image_banner" src="{{ settings.cart_banner_image | img_url:'master' }}"></div>
+  {% endcomment %}
+</div>
+
+<script>
+
+  let crossSell = (cart) => {
+
+console.log("argument: ",cart);
+    // $(document).ready(function () {
+        let allCrossSellProducts = [];
+
+        // console.log("Cross up sell")
+        // jQuery.getJSON('/cart.js', function (cart) {
+            // now have access to Shopify cart object
+            let cartItems = cart.items;
+
+            // removing the free gift from cart items
+            let allCartItem = cart.items.filter((product) => product.product_type != "FREE");
+            let lastCartItem = cart.items.find((product) => product.product_type !== "FREE");
+            // console.log('last cart item ',lastCartItem.product_type);
+           
+            jQuery.getJSON('/products.json?limit=100', function (products) {
+                let all_products = Object.values(products);
+                 // console.log("all_products:: ",all_products[0]);
+                let total_product = ``;
+                let each_product = ``;
+                let itemProductType = lastCartItem.product_type;
+                let cartHandles = allCartItem.map(product => product.handle);
+                // console.log('cartHandles',cartHandles)
+                let matchedItem = all_products[0].filter((product) => product.product_type == itemProductType && cartHandles.every(handle => handle !== product.handle));
+                let extraproduct = all_products[0].filter((product) => cartHandles.every(handle => handle !== product.handle));
+                 // console.log('matchedItem',matchedItem)
+                let matchedItemN = matchedItem.filter(n => !allCartItem.includes(n));
+               let extraproductN = extraproduct.filter(n => !allCartItem.includes(n) && !allCrossSellProducts.includes(n) );
+               let matchedItemNN = matchedItemN.filter(product => {
+                                      return product.variants.length > 0 && product.variants[0].available;
+                                    });
+                // console.log('matchedItemN',matchedItemN)
+                let matchedItemNE = matchedItemNN.filter(n => !allCrossSellProducts.includes(n));
+                // console.log('matchedItemNE',matchedItemNE)
+                  allCrossSellProducts = [];
+                if(matchedItemNE.length > 2){
+                  allCrossSellProducts = matchedItemNE ;
+                }
+                else {
+                  allCrossSellProducts = [...matchedItemNE, ...extraproductN] ;
+                  
+                }
+                 allCrossSellProducts = allCrossSellProducts.filter((obj, index, self) =>
+                        index === self.findIndex((el) => el.id === obj.id )
+                      );
+                let loopLimit = 3 ;
+               // console.log('allcrosssell',allCrossSellProducts)
+                for (let i = 0; i < loopLimit; i++) {
+                  
+                  if(allCrossSellProducts[i].variants[0].available){
+
+                         let imageSrc = allCrossSellProducts[i].images[0]?.src;
+                    
+                      each_product = 
+                                        `<div class="under_cu">
+                                        <div class="cu_image">
+                                        <img style="width:50px;" src="${imageSrc}"/>
+                                        </div>
+                                            <div class="cu_t_p">
+                                            <div id="cu_title">${allCrossSellProducts[i].title}</div>
+                                            <div class="cu_price">Rs. ${allCrossSellProducts[i].variants[0].price}</div>
+                                            </div>
+                                            <div class="addtcFormContainerDiv" onclick="testingf()">
+                                            <form method="post" action="/cart/add" 
+                                            id="AddProductForm-${allCrossSellProducts[i].variants[0].id}" accept-charset="UTF-8" 
+                                                    class="product-form" enctype="multipart/form-data" class="product-block-addtcForm">
+                                                <input type="hidden" name="form_type" value="product">
+                                                <input type="hidden" name="utf8" value="✓">
+                                                <input type="text" value="${allCrossSellProducts[i].variants[0].id}" name="id" hidden="">
+                                                <input type="text" value="1" name="quantity" hidden="">
+                                                <button type="button" class="cu_button" id="BtnAddProduct-${allCrossSellProducts[i].variants[0].id}" 
+                                                        onclick="customAddToCart('${allCrossSellProducts[i].handle}','AddProductForm-${allCrossSellProducts[i].variants[0].id}',this)"> 
+                                                <span style="font-family:Open Sans; font-size: 9px ; font-weight: 700 ;text-transform: uppercase">
+                                                    Add to Cart
+                                                </span >
+                                                </button>
+                                            </form></div></div>`
+                      }else{
+                      each_product = ``
+                      }
+                    
+                    total_product = total_product + each_product;
+                }
+                 $('.cu_maincon').html(total_product);
+
+                // all matched items are stored in the below array
+
+            })//end of product.json api call
+
+
+};//end of crossSell
+
+
+
+
+
+</script>

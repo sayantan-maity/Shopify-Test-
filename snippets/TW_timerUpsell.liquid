@@ -1,0 +1,181 @@
+{% assign TwUpsellProduct = shop.metafields.TWUpsellProduct.TWUpsellProduct.value %}
+<style>
+  #main_div_UTMUpsell {
+  background: white;
+  padding: 25px;
+  padding-bottom: 2px;
+  position: absolute;
+  transform: translateY(-100%);
+  transition: transform 0.5s ease-in !important;
+  z-index: 1;
+  top: 0;
+  display:none;
+  }
+  .TWTimerCloseBTN{
+    position: absolute;
+    top: -27px;
+    right: 0;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .TWupsellTimerATC{
+    background: black;
+    border: 0;
+    padding: 6px 20px;
+    border-radius: 6px;
+    border: 1px solid black;
+  }
+  #utm_upsell_MAINDIV{
+    position:relative;
+    background: #82978266;
+    border: 1px solid green;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .utm_upsell_maildiv {
+      align-items: center;
+      display: flex;
+  }
+
+  .utm_upsell_image {
+      width: 25%;
+      margin-right: 12px
+  }
+
+  .utm_upsell_image img {
+      width: 85%;
+  }
+
+  .utm_upsell_submain {
+      width: 74%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+  }
+
+  .utm_upsell_title {
+    font-size:12px;
+      display: flex;
+      justify-content: space-between;
+  }
+
+  .utm_upsell_Under_title {
+      width: 40%;
+      text-align: center;
+      margin-bottom: 5px;
+  }
+
+  .utm_upsell_priceATC {}
+
+  .utm_upsell_price {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+  }
+
+  .utm_upsell_ATC {}
+
+  .Upsell_count_down {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+  }
+
+  .upsell_expire {
+      font-size: 11px;
+      background: #10c310;
+      padding: 5px;
+      line-height: 16px;
+      border-radius: 4px;
+      color: white;
+      box-shadow: 0px 0px 10px -2px #005200;
+  }
+
+  .upsell_percent {
+      font-weight:13px;
+      color: #a01e9e;
+      font-weight: bold;
+  }
+
+  .upsell_both_prices {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+  }
+
+  .upsell_compare_price {
+      margin-right: 20px;
+      text-decoration: line-through;
+  }
+
+  .upsellATC_btn {
+      background: #0a5e0a;
+      padding: 10px 0px;
+      min-height: auto;
+
+  min-width: 96px;
+  }
+
+  .upsellATC_btn>span {
+      font-size: 12px !important;
+  }
+
+  .upper_dev_upsell {
+    justify-content: space-between;
+    display: flex;
+  }
+
+  .custom_text_upsell {
+      width: 58%;
+      line-height: 20px;
+      font-size: 12px;
+  }
+  .upsellATC_btn:after{
+  box-shadow:none;
+  }
+</style>
+<div id="main_div_UTMUpsell">
+  <div id="utm_upsell_MAINDIV">
+  <div class="TWTimerCloseBTN">x</div>
+        <div class="upper_dev_upsell">
+            <div class="custom_text_upsell">{{ TwUpsellProduct.description | truncate: 100 }}</div>
+            <div class="utm_upsell_Under_title">
+                <div class="upsell_expire">Your offer expires in <span id="some_div"></span></div>
+            </div>
+        </div>
+
+        <div class="utm_upsell_maildiv">
+            <div class="utm_upsell_image"><img src="{{ TwUpsellProduct.featured_image | img_url:'master' }}" /></div>
+            <div class="utm_upsell_submain">
+                <div class="utm_upsell_title">
+                    <span>{{ TwUpsellProduct.title }}</span>
+                </div>
+                <div class="Upsell_count_down">
+                  {% assign priceTWDisUPsell = TwUpsellProduct.price | divided_by:TwUpsellProduct.compare_at_price %}
+                  {% assign priceTWDisUPsell2 = priceTWDisUPsell | times: 100 %}
+                    <div class="utm_upsell_price"><span class="upsell_percent">{{ priceTWDisUPsell }}% Off</span>
+                        <div class="upsell_both_prices"><span>Rs. {{ TwUpsellProduct.price | divided_by: 100 }}</span><span
+                                class="upsell_compare_price">Rs.{{ TwUpsellProduct.compare_at_price | divided_by: 100 }}</span></div>
+                    </div>
+                            <form method="post" action="/cart/add" id="AddProductForm-{{ TwUpsellProduct.selected_or_first_available_variant.id }}" accept-charset="UTF-8" class="product-form" enctype="multipart/form-data">
+                                                <input type="hidden" name="form_type" value="product">
+                                                <input type="hidden" name="utf8" value="✓">
+                                                <input type="text" value="{{ TwUpsellProduct.selected_or_first_available_variant.id }}" name="id" hidden="">
+                                                <input type="text" value="1" name="quantity" hidden="">
+                                                <button type="button" class="cu_button TWupsellTimerATC" id="BtnAddProduct-{{ TwUpsellProduct.selected_or_first_available_variant.id }}" onclick="customAddToCart('{{ TwUpsellProduct.title }}','AddProductForm-{{ TwUpsellProduct.selected_or_first_available_variant.id }}',this)"> 
+                                                <span style="font-family:Open Sans; font-size: 9px ; font-weight: 700 ;text-transform: uppercase">
+                                                    Add to Cart
+                                                </span>
+                                                </button>
+                                            </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+    
+

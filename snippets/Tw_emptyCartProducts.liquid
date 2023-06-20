@@ -1,0 +1,107 @@
+<style>
+  .empty-cart-upsell{
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 15px;
+    overflow-y: scroll;
+    max-height: calc(100vh - 130px);
+  }
+  /* width */
+.empty-cart-upsell::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.empty-cart-upsell::-webkit-scrollbar-track {
+background:#eaeaea;
+}
+ 
+/* Handle */
+.empty-cart-upsell::-webkit-scrollbar-thumb {
+  background: black; 
+  border-radius: 10px;
+}
+  .empty-cart-upsellImageblock img{
+    width: 79px;
+    display: block;
+    margin: auto;
+    box-shadow: 0 0 7px -2px #df980a;
+    border-radius: 6px;
+    border: 1px solid #df980a;
+  }
+  .empty-cart-upsell_productBlock{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 6px;
+  }
+  .empty-cart-upsellTitleNPrice{
+    text-align: center;
+    font-weight: bold;
+    color: black;
+  }
+  .empty-cart-upsellATCBTN{
+    transition-duration:.6s;
+    padding: 10px 30px;
+    background: black;
+    cursor:pointer;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: white;
+    
+  }
+    .empty-cart-upsellATCBTN:hover{
+    background: #ececec;
+    color: black;
+    box-shadow: 4px 4px 9px -3px black;
+  }
+  .empty-cart-upsellAnchor{
+    text-decoration:none;
+  }
+</style>
+
+<div class="empty-cart-upsell">
+          {% assign empty_collection = shop.metafields['tw-emptycartproxduct']['tw-emptycartproxduct'].value %}
+          {% for product in empty_collection.products limit: 5 %}
+            <div class="empty-cart-upsell_productBlock">
+              <a class="empty-cart-upsellAnchor" href="{{ product.url }}">
+              <div class="empty-cart-upsellImageblock">
+                <img src="{{ product.featured_image | img_url:'master' }}">
+              </div>
+              <div class="empty-cart-upsellTitleNPrice">
+                <div class="empty-cart-upsellTitle">{{ product.title }}</div>
+                <div class="empty-cart-upsellPrice">Rs. {{ product.price | divided_by: 100 }}</div>
+              </div>
+              </a>
+              <div class="">
+                <form
+                  method="post"
+                  action="/cart/add"
+                  id="AddProductForm-{{product.selected_or_first_available_variant.id}}"
+                  accept-charset="UTF-8"
+                  class="product-form"
+                  enctype="multipart/form-data"
+                  class="product-block-addtcForm"
+                >
+                  <input type="hidden" name="form_type" value="product">
+                  <input type="hidden" name="utf8" value="✓">
+                  <input type="text" value="{{product.selected_or_first_available_variant.id}}" name="id" hidden="">
+                  <input type="text" value="1" name="quantity" hidden="">
+                  <button
+                    type="button"
+                    class="empty-cart-upsellATCBTN"
+                    id="BtnAddProduct-{{product.selected_or_first_available_variant.id}}"
+                    onclick="customAddToCart('{{ product.handle }}','AddProductForm-{{product.selected_or_first_available_variant.id}}',this)"
+                  >
+                    <span style="font-family:Open Sans; font-size: 9px ; font-weight: 700 ;text-transform: uppercase">
+                      Add to Cart
+                    </span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
